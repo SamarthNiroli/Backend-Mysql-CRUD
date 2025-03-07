@@ -1,18 +1,16 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 
-interface UserAttributes{
+interface UserAttributes {
     id: number;
     name: string;
     email: string;
     password: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id">{}
+interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> 
-
-implements UserAttributes{
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
     public name!: string;
     public email!: string;
@@ -21,28 +19,32 @@ implements UserAttributes{
 
 User.init(
     {
-        id:{
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement:true,
-            primaryKey:true,
+            autoIncrement: true,
+            primaryKey: true,
         },
-        name:{
-            type: DataTypes.STRING(100),
-            allowNull:false,
-
-        },
-        email:{
+        name: {
             type: DataTypes.STRING(100),
             allowNull: false,
         },
-        password:{
-            type:DataTypes.STRING(100),
-            allowNull:false,
+        email: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            unique: true,
+            validate: {
+                isEmail: true,
+            },
+        },
+        password: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
         },
     },
     {
-        tableName:'users',
+        tableName: "users",
         sequelize,
+        timestamps: true,
     }
 )
 
