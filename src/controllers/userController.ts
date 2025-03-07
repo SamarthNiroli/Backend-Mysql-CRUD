@@ -24,7 +24,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (isNaN(userId)) {
+        if (userId) {
              res.status(400).json({ message: "Invalid user ID format" });
         }
 
@@ -42,7 +42,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (isNaN(userId)) {
+        if (userId) {
              res.status(400).json({ message: "Invalid user ID format" });
         }
 
@@ -61,7 +61,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (isNaN(userId)) {
+        if (userId) {
              res.status(400).json({ message: "Invalid user ID format" });
         }
 
