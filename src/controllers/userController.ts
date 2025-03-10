@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userService";
+import { confirmationEmail } from "../services/emailService";
 
 const userService = new UserService();
 
 export const createUser = async (req: Request, res: Response) => {
     try {
         const user = await userService.createUser(req.body);
-        res.status(201).json({ message: "User created successfully", user });
+        await confirmationEmail(user.email, user.name);
+        res.status(201).json({ message: "User created successfully. Confirmation email sent.", user });
     } catch (error) {
         res.status(500).json({ message: "Error creating user", error });
     }
@@ -24,13 +26,16 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (userId) {
-             res.status(400).json({ message: "Invalid user ID format" });
+
+        if (isNaN(userId)) {
+            res.status(400).json({ message: "Invalid user ID format" });
+            return;
         }
 
         const user = await userService.getUserById(userId);
         if (!user) {
-             res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "User not found" });
+            return;
         }
 
         res.status(200).json(user);
@@ -42,13 +47,16 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (userId) {
-             res.status(400).json({ message: "Invalid user ID format" });
+
+        if (isNaN(userId)) {
+            res.status(400).json({ message: "Invalid user ID format" });
+            return;
         }
 
         const user = await userService.getUserById(userId);
         if (!user) {
-         res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "User not found" });
+            return;
         }
 
         await userService.deleteUser(userId);
@@ -61,14 +69,17 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.params.userId);
-        if (userId) {
-             res.status(400).json({ message: "Invalid user ID format" });
+
+        if (isNaN(userId)) {
+            res.status(400).json({ message: "Invalid user ID format" });
+            return;
         }
 
         const userData = req.body;
         const user = await userService.getUserById(userId);
         if (!user) {
-             res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "User not found" });
+            return;
         }
 
         const updatedUser = await userService.updateUser(userId, userData);

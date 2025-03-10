@@ -1,13 +1,22 @@
 import { UserRepository } from "../repositories/userRepositories";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/userDTO";
 import { mapToUserResponse } from "../mappers/userMapper";
+import { confirmationEmail } from "./emailService";
 
 export class UserService {
     private userRepository = new UserRepository();
 
     async createUser(userData: CreateUserDTO) {
         const user = await this.userRepository.create(userData);
-        return mapToUserResponse(user);
+
+        // return mapToUserResponse(user);
+
+        try {
+            await confirmationEmail(user.email, user.name)
+        } catch (error) {
+            console.log("Failed to send  confirmation email:", error)
+        }
+        return mapToUserResponse(user); 
     }
 
     async getAllUsers() {
@@ -27,4 +36,7 @@ export class UserService {
     async deleteUser(id: number) {
         return await this.userRepository.delete(id);
     }
+
+
 }
+ 
