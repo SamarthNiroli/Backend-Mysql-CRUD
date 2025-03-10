@@ -9,14 +9,12 @@ export class UserService {
     async createUser(userData: CreateUserDTO) {
         const user = await this.userRepository.create(userData);
 
-        // return mapToUserResponse(user);
-
         try {
-            await confirmationEmail(user.email, user.name)
+            await confirmationEmail(user.email, user.name);
         } catch (error) {
-            console.log("Failed to send  confirmation email:", error)
+            console.log("Failed to send confirmation email:", error);
         }
-        return mapToUserResponse(user); 
+        return mapToUserResponse(user);
     }
 
     async getAllUsers() {
@@ -24,19 +22,16 @@ export class UserService {
         return users.map(mapToUserResponse);
     }
 
-    async getUserById(id: number) {
+    async getUserById(id: string) { 
         const user = await this.userRepository.findById(id);
         return user ? mapToUserResponse(user) : null;
     }
 
-    async updateUser(id: number, userData: UpdateUserDTO) {
+    async updateUser(id: string, userData: UpdateUserDTO) {
         return await this.userRepository.update(id, userData);
     }
 
-    async deleteUser(id: number) {
+    async deleteUser(id: string) {
         return await this.userRepository.delete(id);
     }
-
-
 }
- 

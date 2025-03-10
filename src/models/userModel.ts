@@ -1,8 +1,9 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
+import { v4 as uuidv4 } from "uuid";
 
 interface UserAttributes {
-    id: number;
+    id: string; // Change id to string for UUID
     name: string;
     email: string;
     password: string;
@@ -11,7 +12,7 @@ interface UserAttributes {
 interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    public id!: number;
+    public id!: string;
     public name!: string;
     public email!: string;
     public password!: string;
@@ -20,8 +21,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 User.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
+            type: DataTypes.UUID, 
+            defaultValue: DataTypes.UUIDV4, 
             primaryKey: true,
         },
         name: {
@@ -46,6 +47,6 @@ User.init(
         sequelize,
         timestamps: true,
     }
-)
+);
 
 export default User;

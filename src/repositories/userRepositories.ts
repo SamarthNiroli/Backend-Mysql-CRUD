@@ -10,15 +10,15 @@ export class UserRepository {
         return await User.findAll();
     }
 
-    async findById(id: number): Promise<User | null> {
+    async findById(id: string): Promise<User | null> { 
         return await User.findByPk(id);
     }
 
-    async update(id: number, userData: UpdateUserDTO): Promise<[number]> {
+    async update(id: string, userData: UpdateUserDTO): Promise<[number]> { // 
         return await User.update(userData, { where: { id } });
     }
 
-    async delete(id: number): Promise<number> {
+    async delete(id: string): Promise<number> { 
         return await User.destroy({ where: { id } });
     }
 }
